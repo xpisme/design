@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <title>留言吧！</title>
+		<meta name="keywords" content="Author: xp" />
+		<meta name="description" content="Author: xp" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <link rel="stylesheet" href="view/assets/css/reset.css">
+        <link rel="stylesheet" href="view/assets/css/style.css">
+    </head>
+
+    <body>
+
+        <div id="head">
+            <p><span>欢迎<a href=""><?php echo $_COOKIE['user']; ?></a></span> | <span><?php echo $arr[0]['coin'] ?></span>币 | <span><a href="exec.php?act=logout">退出</a></span></p>
+        </div>
+        <div id="left">
+            <form action="exec.php" method="post" onsubmit="return false;">
+                <input type="text" id="title" name="title" placeholder="标题">
+                <textarea name="content" id="content" cols="30" rows="10" placeholder="内容"></textarea>
+                <button id="sub" style="width:120px;">发布</button>
+            </form>
+        </div>
+        <div id="right">
+            <ul id="rcon">
+            </ul>
+        </div>
+		
+        <script src="view/assets/js/jquery-1.8.2.min.js"></script>
+        <div id="back"><img src="view/assets/img/backgrounds/01.jpg" width="100%" height="100%" alt=""></div>
+    </body>
+<script type="text/javascript">
+    // 格式化时间
+    function todate(nS){
+        return new Date(parseInt(nS) * 1000).toLocaleString().substr(0,10);
+    }
+
+    /*json的解析*/
+    var data = <?php echo $res; ?>;
+    var res='';
+    for(var i=0,l=data.length-1;l>i;l--){
+        var user = "<?php echo $_COOKIE['user']; ?>" ;
+        if(data[l]['uname'] != user){
+            var rp = '<a class="report">举报<input type="hidden" value="'+data[l]['id']+'" /></a>';
+        }else{
+            var rp = '';
+        }
+        res+='<li> <p class="p1">'+data[l]['title']+rp+'</p> <p class="p2">'+data[l]['content']+'</p> <p class="p3">'+data[l]['uname']+'发布于'+todate(data[l]['create_time']) +'</p> </li>';
+    }
+    $(res).prependTo("#rcon");
+
+    $(function(){
+        // 正则匹配内容
+        $("#title").keyup(function(){
+            var t = $("#title").val();
+            var re = /[, -\s]/g;
+            var s = t.replace(re,'');
+            $("#title").val(s);
+        });
+
+        // 提交留言
+        $("#sub").click(function(){
+            var title = $("#title").val();
+            var content = $("#content").val();
+            if(title == '' || content == ''){
+                return false;
+            }
+            $.ajax({
+                type: 'post',
+                url: 'exec.php',
+                data: {'act':'publish','title':title,'content':content},
+                dataType: 'json',
+                success:function(msg){
+                    console.log(msg);
+                    if(msg){
+                        $('<li style="display:none;"> <p class="p1">'+title+'</p> <p class="p2">'+content+'</p> <p class="p3">'+msg['uname']+'发布于:'+msg['date']+'</p> </li>').prependTo("#rcon");
+                        $("li:hidden").fadeIn('slow');
+                        $("#left").find('input').val('');
+                        $("#left").find('textarea').val('');
+                    }
+                }
+            })
+        });
+        // 举报内容
+        $(".report").live("click",function(){
+            var con = $(this).parent().next().html();
+            var id = $(this).children('input').first().val();
+
+            $.ajax({
+                type: 'POST',
+                url: 'exec.php',
+                data: {'act':'report', 'con':con,'id':id},
+                success:function(msg){
+                    if(msg != 0){
+                        $("input[value="+id+"]").parent().parent().parent().remove();
+                        alert(msg);
+                    }else{
+                        alert('此内容无误');
+                    }
+                }
+            });
+        });
+
+    });
+</script>
+</html>
+
+

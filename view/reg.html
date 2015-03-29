@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <title>欢迎注册</title>
+		<meta name="keywords" content="Author: xp" />
+		<meta name="description" content="Author: xp" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <link rel="stylesheet" href="view/assets/css/reset.css">
+        <link rel="stylesheet" href="view/assets/css/supersized.css">
+        <link rel="stylesheet" href="view/assets/css/style.css">
+
+
+    </head>
+
+    <body>
+
+        <div class="page-container">
+            <h1>注册</h1>
+            <form action="exec.php" method="post">
+                <input type="text" name="username" class="username" placeholder="用户名">
+                <input type="password" name="password" class="password" placeholder="密码">
+                <input type="password" name="repassword" class="repassword" placeholder="确认密码">
+                <input type="hidden" name="act" value="reg">
+                <button type="submit">注册用户</button>
+                <div class="error"><span>+</span></div>
+            </form>
+            <div class="connect">
+                <p>Account exists:</p>
+                <p>
+                    <a class="login" href="index.php">login</a>
+                </p>
+            </div>
+        </div>
+		
+        <script src="view/assets/js/jquery-1.8.2.min.js"></script>
+        <script src="view/assets/js/supersized.3.2.7.min.js"></script>
+        <script src="view/assets/js/supersized-init.js"></script>
+        <script src="view/assets/js/scriptsl.js"></script>
+
+    </body>
+
+</html>
+
+
